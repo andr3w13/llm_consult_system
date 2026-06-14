@@ -1,0 +1,85 @@
+version: "3.9"
+
+# ─────────────────────────────────────────────────────────────
+# Полный стек: Auth Service + Bot Service + инфраструктура
+#
+# Запуск:       docker compose up --build
+# Только auth:  docker compose up auth redis
+# Swagger UI:   http://localhost:8000/docs
+# ─────────────────────────────────────────────────────────────
+
+services:
+
+  # ── Инфраструктура ─────────────────────────────────────────
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    ports:
+      - "5672:5672"
+      - "15672:15672"   # Management UI: http://localhost:15672 (guest/guest)
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # ── Auth Service ────────────────────────────────────────────
+
+  auth:
+    build:
+      context: ./auth_service
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./auth_service/.env
+    volumes:
+      - auth_data:/app/data   # SQLite файл
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Bot Service: Telegram polling ──────────────────────────
+
+  bot:
+    build:
+      context: ./bot_service
+      dockerfile: Dockerfile
+    env_file:
+      - ./bot_service/.env
+    depends_on:
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    command: python -m app.bot_run
+
+  # ── Bot Service: Celery worker ─────────────────────────────
+
+  celery_worker:
+    build:
+      context: ./bot_service
+      dockerfile: Dockerfile
+    env_file:
+      - ./bot_service/.env
+    depends_on:
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    command: celery -A app.infra.celery_app.celery_app worker --loglevel=info
+
+volumes:
+  auth_data:

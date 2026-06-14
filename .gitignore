@@ -1,0 +1,22 @@
+# Виртуальные окружения
+.venv/
+venv/
+ENV/
+
+# Секретные файлы настроек (ИХ НЕЛЬЗЯ НА ГИТ)
+*.env
+.env.
+
+# Кэш Python
+__pycache__/
+*.pyc
+
+# База данных SQLite
+*.db
+*.sqlite3
+
+# Логи и временные файлы
+*.log
+.pytest_cache/
+
+uv.lock
