@@ -231,19 +231,19 @@ python -m pytest tests/ -v
 
 #### 1.1 Регистрация пользователя (POST /auth/register)
 
-![register](screens\register.png)
+![register](screens/register.png)
 
 ---
 
 #### 1.2 Логин и получение JWT (POST /auth/login)
 
-![login](screens\login.png)
+![login](screens/login.png)
 
 ---
 
 #### 1.3 Профиль текущего пользователя (GET /auth/me)
 
-![get](screens\get.png)
+![get](screens/get.png)
 
 ---
 
@@ -251,25 +251,25 @@ python -m pytest tests/ -v
 
 #### 2.1 Команда /start
 
-![/start](screens\start.png)
+![/start](screens/start.png)
 
 ---
 
 #### 2.2 Авторизация через /token
 
-![/token](screens\token.png)
+![/token](screens/token.png)
 
 ---
 
 #### 2.3 LLM-запрос и ответ
 
-![LLM request](screens\request.png)
+![LLM request](screens/request.png)
 
 ---
 
 ### 3. RabbitMQ Management UI
 
-![RabbitMQ](screens\reabbitmq.png)
+![RabbitMQ](screens/reabbitmq.png)
 
 ---
 
@@ -277,8 +277,8 @@ python -m pytest tests/ -v
 
 #### 4.1 Тесты Auth Service
 
-![Тестирование auth_service](screens\auth_tests.png)
+![Тестирование auth_service](screens/auth_tests.png)
 
 #### 4.2 Тесты Bot Service
 
-![Тестирование bot_service](screens\bot_tests.png)
+![Тестирование bot_service](screens/bot_tests.png)
